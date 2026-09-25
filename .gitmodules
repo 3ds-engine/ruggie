@@ -1,6 +1,0 @@
-[submodule "crates/crates/ruggie-lib"]
-	path = crates/crates/ruggie-lib
-	url = https://github.com/3ds-engine/ruggie-lib.git
-[submodule "crates/ruggie-lib"]
-	path = crates/ruggie-lib
-	url = https://github.com/3ds-engine/ruggie-lib.git
