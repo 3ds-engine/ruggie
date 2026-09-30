@@ -1,25 +1,29 @@
-use ctru::{prelude::*, services::ir_user::IrDeviceId::CirclePadPro};
-use ruggie_lib::{prelude::*, ruggie_lib::ruggie_draw_handle::{Color, RuggieDrawHandle}};
+use ctru::prelude::*;
+use ruggie_lib::{
+    prelude::*,
+    ruggie_lib::ruggie_draw_handle::Color,
+};
 
 fn main() {
-    if let Ok(r) = RuggieLib::new() {
-    // usar r
-        while r.is_running(){
-            r.wait_for_vblank();
-            let d = r.start_drawing_bottom();
-            d.clear_screen(Color::new(0, 255, 255, 255));
+    let Ok(rl) = RuggieLib::new() else {
+        return;
+    };
 
-            d.draw_rectangle(0.0, 0.0, 100.0, 100.0, Color::new(255, 0,0, 255));
-        }
+    while rl.is_running() {
+        rl.wait_for_vblank();
+
+        let draw = rl.start_drawing_bottom();
+        draw.clear_screen(Color::new(0, 255, 255, 255));
+        draw.draw_rectangle(0.0, 0.0, 100.0, 100.0, Color::new(255, 0, 0, 255));
     }
 }
 
 fn render_cleon(apt: &Apt, hid: &mut Hid, gfx: &Gfx) {
-    let top_screen = ruggie_lib::create_top_screen();
+    let top_screen = ruggie_lib::deprecated::create_top_screen();
     let (mut x, mut y) = (0.0, 0.0);
 
-    let mut sprite_sheet = ruggie_lib::create_sprite_sheet("romfs:/gfx/spritesheet.t3x").unwrap();
-    let mut cleon_sprite = ruggie_lib::create_sprite_from_sheet(sprite_sheet, 0);
+    let sprite_sheet = ruggie_lib::deprecated::create_sprite_sheet("romfs:/gfx/spritesheet.t3x").unwrap();
+    let mut cleon_sprite = ruggie_lib::deprecated::create_sprite_from_sheet(sprite_sheet, 0);
 
     while apt.main_loop() {
         gfx.wait_for_vblank();
@@ -28,7 +32,7 @@ fn render_cleon(apt: &Apt, hid: &mut Hid, gfx: &Gfx) {
             break;
         }
 
-        ruggie_lib::draw_sprite(top_screen, &mut cleon_sprite, x, y);
+        ruggie_lib::deprecated::draw_sprite(top_screen, &mut cleon_sprite, x, y);
         x += 1.0;
         y += 1.0;
     }
@@ -36,7 +40,7 @@ fn render_cleon(apt: &Apt, hid: &mut Hid, gfx: &Gfx) {
 
 fn render_moving_rectangle(apt: Apt, mut hid: Hid, gfx: &Gfx) {
     let (mut x, mut y) = (0.0, 0.0);
-    let top_screen = ruggie_lib::create_top_screen();
+    let top_screen = ruggie_lib::deprecated::create_top_screen();
     while apt.main_loop() {
         gfx.wait_for_vblank();
 
@@ -48,29 +52,27 @@ fn render_moving_rectangle(apt: Apt, mut hid: Hid, gfx: &Gfx) {
             break;
         }
 
-        if hid.keys_held().contains(KeyPad::DPAD_LEFT){
+        if hid.keys_held().contains(KeyPad::DPAD_LEFT) {
             x_dir = -1.0;
         }
 
-        if hid.keys_held().contains(KeyPad::DPAD_RIGHT){
+        if hid.keys_held().contains(KeyPad::DPAD_RIGHT) {
             x_dir = 1.0;
         }
 
-        if hid.keys_held().contains(KeyPad::DPAD_UP){
+        if hid.keys_held().contains(KeyPad::DPAD_UP) {
             y_dir = -1.0;
         }
 
-
-        if hid.keys_held().contains(KeyPad::DPAD_DOWN){
+        if hid.keys_held().contains(KeyPad::DPAD_DOWN) {
             y_dir = 1.0;
         }
 
         x += x_dir;
 
-        y+= y_dir;
+        y += y_dir;
 
-
-        ruggie_lib::draw_square(top_screen, x, y);
+        ruggie_lib::deprecated::draw_square(top_screen, x, y);
 
         let c_x = hid.circlepad_position().0;
         let c_y = hid.circlepad_position().1;
@@ -79,4 +81,3 @@ fn render_moving_rectangle(apt: Apt, mut hid: Hid, gfx: &Gfx) {
         println!("\x1B[2JDir_x: {x_dir}\nDir_y: {y_dir}\nCircle_pad: {c_x} {c_y}");
     }
 }
-
