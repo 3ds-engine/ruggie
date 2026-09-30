@@ -1,16 +1,17 @@
 use ctru::{prelude::*, services::ir_user::IrDeviceId::CirclePadPro};
+use ruggie_lib::{prelude::*, ruggie_lib::ruggie_draw_handle::{Color, RuggieDrawHandle}};
 
 fn main() {
-    let apt = Apt::new().unwrap();
-    let mut hid = Hid::new().unwrap();
-    let gfx = Gfx::new().unwrap();
-    let console = Console::new(gfx.bottom_screen.borrow_mut());
+    if let Ok(r) = RuggieLib::new() {
+    // usar r
+        while r.is_running(){
+            r.wait_for_vblank();
+            let d = r.start_drawing_bottom();
+            d.clear_screen(Color::new(0, 255, 255, 255));
 
-    let romfs = ctru::services::romfs::RomFS::new().unwrap();
-
-    ruggie_lib::init();
-    render_moving_rectangle(apt, hid, &gfx);
-    ruggie_lib::end();
+            d.draw_rectangle(0.0, 0.0, 100.0, 100.0, Color::new(255, 0,0, 255));
+        }
+    }
 }
 
 fn render_cleon(apt: &Apt, hid: &mut Hid, gfx: &Gfx) {
