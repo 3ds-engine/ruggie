@@ -5,17 +5,17 @@ use ruggie_lib::{
 };
 
 fn main() {
-    // let Ok(mut rl) = RuggieLib::new().unwrap().with_romfs() else {
-    //     return;
-    // };
-    //
-    // render_cleon(rl);
-    let mut hid = Hid::new().unwrap();
-    let gfx = Gfx::new().unwrap();
-    let apt = Apt::new().unwrap();
-    let romfs = RomFS::new().unwrap();
+    let Ok(mut rl) = RuggieLib::new().unwrap().with_romfs() else {
+        return;
+    };
+    
+    render_cleon(rl);
+    //let mut hid = Hid::new().unwrap();
+    //let gfx = Gfx::new().unwrap();
+    //let apt = Apt::new().unwrap();
+    //let romfs = RomFS::new().unwrap();
 
-    render_cleon_deprecated(&apt, &mut hid, &gfx);
+    //render_cleon_deprecated(&apt, &mut hid, &gfx);
 }
 
 
@@ -31,7 +31,7 @@ fn render_cleon(mut rl: RuggieLib) {
         let mut draw = rl.start_drawing();
 
         draw.clear_screen(Color::new(0, 255, 255, 255));
-        draw.draw_sprite(&cleon_sprite, 0.0, 0.0);
+        draw.draw_sprite(&mut cleon_sprite, 0.0, 0.0);
     }
 
 }
@@ -49,8 +49,6 @@ fn render_cleon_deprecated(apt: &Apt, hid: &mut Hid, gfx: &Gfx) {
         gfx.wait_for_vblank();
 
         ruggie_lib::deprecated::draw_sprite(top_screen, &mut cleon_sprite, x, y);
-        x += 1.0;
-        y += 1.0;
     }
 
     ruggie_lib::deprecated::end();
