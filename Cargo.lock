@@ -264,9 +264,9 @@ dependencies = [
 
 [[package]]
 name = "lazy_static"
-version = "1.5.0"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
+checksum = "20870f649af7073d53e38067b2a84312175d56ea15217e1b15bc83506ec50afb"
 
 [[package]]
 name = "lazycell"
@@ -478,11 +478,12 @@ dependencies = [
 [[package]]
 name = "ruggie-lib"
 version = "0.1.0"
-source = "git+https://github.com/3ds-engine/ruggie-lib#6a8f7a75b166dd2d5bd1763e88e82468e36b9986"
+source = "git+https://github.com/3ds-engine/ruggie-lib#70a31f336857b95f354c7456250da9016e3787e4"
 dependencies = [
  "citro2d-sys",
  "citro3d-sys",
  "ctru-rs",
+ "thiserror",
 ]
 
 [[package]]
@@ -598,6 +599,26 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "thiserror"
+version = "2.0.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "09e52cb86a36cede5cb101bf8908837b3e4c6e5e59fe7fd85c23fb56200d189e"
+dependencies = [
+ "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "2.0.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe5197923287db20a58125f0bc85c062f7f2c892de97b18c356f9efb14b28524"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.6",
 ]
 
 [[package]]
