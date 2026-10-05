@@ -16,10 +16,10 @@ fn main() {
     render_shapes(rl);
 }
 
-const CLEON_FRONT_DEPTH: f32 = 5.0;
-const CLEON_BACK_DEPTH: f32 = -5.0;
-
 fn render_cleon(mut rl: RuggieLib) {
+    const CLEON_FRONT_DEPTH: f32 = 5.0;
+    const CLEON_BACK_DEPTH: f32 = -5.0;
+
     let Some(sprite_sheet) = SpriteSheet::new("romfs:/gfx/sprite.t3x") else {
         return;
     };
@@ -72,6 +72,9 @@ fn render_shapes(mut rl: RuggieLib) {
     const GREEN: Color = Color::new(0, 255, 0, 255);
     const BLUE: Color = Color::new(0, 0, 255, 255);
     const YELLOW: Color = Color::new(255, 255, 0, 255);
+    const BLACK: Color = Color::new(0, 0, 0, 255);
+
+    const OUTLINE : u32 = 5;
 
     while rl.is_running() {
         rl.wait_for_vblank();
@@ -81,8 +84,9 @@ fn render_shapes(mut rl: RuggieLib) {
 
         let square_side = 100.0;
         draw.draw_rectangle(0.0, 0.0, square_side, square_side, RED);
+        draw.draw_rectangle_outline(0.0, 0.0, square_side, square_side, OUTLINE, BLACK);
 
-        let circle_radius = 100.0;
+        let circle_radius = 50.0;
         draw.draw_circle(
             draw.screen_witdh() as f32 - circle_radius,
             circle_radius,
@@ -93,15 +97,20 @@ fn render_shapes(mut rl: RuggieLib) {
         draw.draw_bottom();
         draw.clear_screen(WHITE);
 
-        let ellipse_rx = 100.0;
-        let ellipse_ry = 50.0;
-        draw.draw_ellipse(ellipse_rx, ellipse_ry, ellipse_rx, ellipse_ry, BLUE);
+        let ellipse_rx = 50.0;
+        let ellipse_ry = 25.0;
+        draw.draw_ellipse(ellipse_rx, ellipse_ry, ellipse_rx, ellipse_ry, GREEN);
 
         let triangle_witdth = 100.0;
         let triangle_height = 75.0;
-        let (x0, y0) = (draw.screen_witdh() as f32 - triangle_witdth, triangle_height);
+        let (x0, y0) = (
+            draw.screen_witdh() as f32 - triangle_witdth,
+            triangle_height,
+        );
         let (x1, y1) = (draw.screen_witdh() as f32 - triangle_witdth / 2.0, 0.0);
         let (x2, y2) = (draw.screen_witdh() as f32, triangle_height);
         draw.draw_triangle(x0, y0, x1, y1, x2, y2, YELLOW);
+        draw.draw_triangle_outline(x0, y0, x1, y1, x2, y2, OUTLINE, BLACK);
+
     }
 }
