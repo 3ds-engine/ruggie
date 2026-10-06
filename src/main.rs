@@ -1,8 +1,3 @@
-use ctru::{
-    prelude::*,
-    services::{gfx, romfs::RomFS},
-};
-
 use ruggie_lib::{Feature, draw::sprite_sheet::SpriteSheet, prelude::*};
 
 fn main() {
@@ -29,7 +24,7 @@ fn render_cleon(mut rl: RuggieLib) {
     let x_pos = (rl.top_left_screen.width() / 2) as f32;
     let y_pos = (rl.top_left_screen.height() / 2) as f32;
 
-    while (rl.is_running()) {
+    while rl.is_running() {
         rl.wait_for_vblank();
         let front_cleon_depth = CLEON_FRONT_DEPTH * rl.get_3d_slider_state();
         let back_cleon_depth = CLEON_BACK_DEPTH * rl.get_3d_slider_state();
@@ -74,7 +69,7 @@ fn render_shapes(mut rl: RuggieLib) {
     const YELLOW: Color = Color::new(255, 255, 0, 255);
     const BLACK: Color = Color::new(0, 0, 0, 255);
 
-    const OUTLINE : u32 = 5;
+    const OUTLINE : u16 = 5;
 
     while rl.is_running() {
         rl.wait_for_vblank();

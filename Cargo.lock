@@ -478,7 +478,7 @@ dependencies = [
 [[package]]
 name = "ruggie-lib"
 version = "0.1.0"
-source = "git+https://github.com/3ds-engine/ruggie-lib#95658d28865ce97acf49764059f121918785f773"
+source = "git+https://github.com/3ds-engine/ruggie-lib#a5cdafa5df65589e0f67cc192dc85047c1c16ee4"
 dependencies = [
  "citro2d-sys",
  "citro3d-sys",
