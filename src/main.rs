@@ -8,7 +8,8 @@ fn main() {
         return;
     };
 
-    render_shapes(rl);
+    // render_shapes(rl);
+    render_cleon(rl);
 }
 
 fn render_cleon(mut rl: RuggieLib) {
@@ -20,6 +21,7 @@ fn render_cleon(mut rl: RuggieLib) {
     };
 
     let mut cleon_sprite = sprite_sheet.get_sprite(0usize);
+    cleon_sprite.rotate_degrees(90.0);
 
     let x_pos = (rl.top_left_screen.width() / 2) as f32;
     let y_pos = (rl.top_left_screen.height() / 2) as f32;
@@ -69,7 +71,7 @@ fn render_shapes(mut rl: RuggieLib) {
     const YELLOW: Color = Color::new(255, 255, 0, 255);
     const BLACK: Color = Color::new(0, 0, 0, 255);
 
-    const OUTLINE : u16 = 5;
+    const OUTLINE: u16 = 5;
 
     while rl.is_running() {
         rl.wait_for_vblank();
@@ -106,6 +108,5 @@ fn render_shapes(mut rl: RuggieLib) {
         let (x2, y2) = (draw.screen_witdh() as f32, triangle_height);
         draw.draw_triangle(x0, y0, x1, y1, x2, y2, YELLOW);
         draw.draw_triangle_outline(x0, y0, x1, y1, x2, y2, OUTLINE, BLACK);
-
     }
 }
