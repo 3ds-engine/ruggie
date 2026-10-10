@@ -1,4 +1,4 @@
-use ruggie_lib::{Feature, draw::sprite_sheet::SpriteSheet, prelude::*};
+use ruggie_lib::prelude::*;
 
 fn main() {
     let Ok(rl) = RuggieLib::new()
@@ -8,7 +8,7 @@ fn main() {
         return;
     };
 
-    render_shapes(rl);
+    rotating_cleon(rl);
 }
 
 fn render_cleon(mut rl: RuggieLib) {
@@ -130,6 +130,8 @@ fn render_shapes(mut rl: RuggieLib) {
 }
 
 fn rotating_cleon(mut rl: RuggieLib) {
+    let Ok(mut rl) = rl.with([Feature::Console(BOTTOM_SCREEN_INDEX)]) else { return; }; // Enable console
+
     let Some(spritesheet) = SpriteSheet::new("romfs:/gfx/sprite.t3x") else {
         return;
     };
@@ -138,8 +140,19 @@ fn rotating_cleon(mut rl: RuggieLib) {
         return;
     };
 
-    let angle_diff = 1.0; //Degrees
+    cleon_sprite.set_pivot(0.5, 0.5); // Set position to center
 
+    let (w, h) = cleon_sprite.get_size();
+    println!("Before:");
+    println!("Width: {w}, height: {h}");
+
+    cleon_sprite.set_scale(0.5, 0.5);
+
+    let (w, h) = cleon_sprite.get_size();
+    println!("After:");
+    println!("Width: {w}, height: {h}");
+
+    let angle_diff = 1.0; // Degrees
     while rl.is_running() {
         rl.wait_for_vblank();
 
@@ -153,16 +166,13 @@ fn rotating_cleon(mut rl: RuggieLib) {
         );
 
         cleon_sprite.rotate_degrees(angle_diff);
-
-        render.draw_bottom();
-        render.clear_screen(Color::new(255, 255, 255, 255));
     }
 }
 
 #[cfg(test)]
 mod tests {
 
-use super::*;
+    use super::*;
 
     #[test]
     fn try_get_valid_sprite() {
@@ -173,7 +183,7 @@ use super::*;
     #[test]
     #[should_panic]
     fn try_get_invalid_sprite() {
-       let sprite_sheet = SpriteSheet::new("romfs:/gfx/sprite.t3x").unwrap();
-       let sprite = sprite_sheet.get_sprite(1).unwrap(); // Panic happens here
+        let sprite_sheet = SpriteSheet::new("romfs:/gfx/sprite.t3x").unwrap();
+        let sprite = sprite_sheet.get_sprite(1).unwrap(); // Panic happens here
     }
 }
