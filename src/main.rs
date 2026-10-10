@@ -19,7 +19,9 @@ fn render_cleon(mut rl: RuggieLib) {
         return;
     };
 
-    let mut cleon_sprite = sprite_sheet.get_sprite(0usize);
+    let Some(mut cleon_sprite) = sprite_sheet.get_sprite(0usize) else {
+        return;
+    };
 
     let x_pos = (rl.top_left_screen.width() / 2) as f32;
     let y_pos = (rl.top_left_screen.height() / 2) as f32;
@@ -132,7 +134,10 @@ fn rotating_cleon(mut rl: RuggieLib) {
         return;
     };
 
-    let mut cleon_sprite = spritesheet.get_sprite(0);
+    let Some(mut cleon_sprite) = spritesheet.get_sprite(0) else {
+        return;
+    };
+
     let angle_diff = 1.0; //Degrees
 
     while rl.is_running() {
@@ -151,5 +156,24 @@ fn rotating_cleon(mut rl: RuggieLib) {
 
         render.draw_bottom();
         render.clear_screen(Color::new(255, 255, 255, 255));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+use super::*;
+
+    #[test]
+    fn try_get_valid_sprite() {
+        let sprite_sheet = SpriteSheet::new("romfs:/gfx/sprite.t3x").unwrap();
+        let sprite = sprite_sheet.get_sprite(0).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn try_get_invalid_sprite() {
+       let sprite_sheet = SpriteSheet::new("romfs:/gfx/sprite.t3x").unwrap();
+       let sprite = sprite_sheet.get_sprite(1).unwrap(); // Panic happens here
     }
 }
