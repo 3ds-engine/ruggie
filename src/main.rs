@@ -8,8 +8,7 @@ fn main() {
         return;
     };
 
-    // render_shapes(rl);
-    render_cleon(rl);
+    render_shapes(rl);
 }
 
 fn render_cleon(mut rl: RuggieLib) {
@@ -21,7 +20,6 @@ fn render_cleon(mut rl: RuggieLib) {
     };
 
     let mut cleon_sprite = sprite_sheet.get_sprite(0usize);
-    cleon_sprite.rotate_degrees(90.0);
 
     let x_pos = (rl.top_left_screen.width() / 2) as f32;
     let y_pos = (rl.top_left_screen.height() / 2) as f32;
@@ -72,6 +70,7 @@ fn render_shapes(mut rl: RuggieLib) {
     const BLACK: Color = Color::new(0, 0, 0, 255);
 
     const OUTLINE: u16 = 5;
+    const APPROX_SIDES: u32 = 20;
 
     while rl.is_running() {
         rl.wait_for_vblank();
@@ -90,6 +89,14 @@ fn render_shapes(mut rl: RuggieLib) {
             circle_radius,
             BLUE,
         );
+        draw.draw_circle_outline(
+            draw.screen_witdh() as f32 - circle_radius,
+            circle_radius,
+            circle_radius,
+            APPROX_SIDES,
+            OUTLINE,
+            BLACK,
+        );
 
         draw.draw_bottom();
         draw.clear_screen(WHITE);
@@ -97,6 +104,15 @@ fn render_shapes(mut rl: RuggieLib) {
         let ellipse_rx = 50.0;
         let ellipse_ry = 25.0;
         draw.draw_ellipse(ellipse_rx, ellipse_ry, ellipse_rx, ellipse_ry, GREEN);
+        draw.draw_ellipse_outline(
+            ellipse_rx,
+            ellipse_ry,
+            ellipse_rx,
+            ellipse_ry,
+            APPROX_SIDES,
+            OUTLINE,
+            BLACK,
+        );
 
         let triangle_witdth = 100.0;
         let triangle_height = 75.0;
@@ -108,5 +124,32 @@ fn render_shapes(mut rl: RuggieLib) {
         let (x2, y2) = (draw.screen_witdh() as f32, triangle_height);
         draw.draw_triangle(x0, y0, x1, y1, x2, y2, YELLOW);
         draw.draw_triangle_outline(x0, y0, x1, y1, x2, y2, OUTLINE, BLACK);
+    }
+}
+
+fn rotating_cleon(mut rl: RuggieLib) {
+    let Some(spritesheet) = SpriteSheet::new("romfs:/gfx/sprite.t3x") else {
+        return;
+    };
+
+    let mut cleon_sprite = spritesheet.get_sprite(0);
+    let angle_diff = 1.0; //Degrees
+
+    while rl.is_running() {
+        rl.wait_for_vblank();
+
+        let mut render = rl.start_drawing();
+        render.clear_screen(Color::new(255, 255, 255, 255));
+
+        render.draw_sprite(
+            &mut cleon_sprite,
+            render.screen_witdh() as f32 / 2.0,
+            render.screen_height() as f32 / 2.0,
+        );
+
+        cleon_sprite.rotate_degrees(angle_diff);
+
+        render.draw_bottom();
+        render.clear_screen(Color::new(255, 255, 255, 255));
     }
 }
