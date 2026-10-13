@@ -144,9 +144,6 @@ fn rotating_cleon(mut rl: RuggieLib) {
         return;
     };
 
-    let mut lua = Lua::new();
-    execute_lua_file(&mut lua, "../test/lua/HelloRuggie.lua");
-
     cleon_sprite.set_pivot(0.5, 0.5); // Set position to center
 
     let (w, h) = cleon_sprite.get_size();

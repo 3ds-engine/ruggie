@@ -1,18 +1,9 @@
-use std::{fs::Metadata, path::Path};
-use mlua::{Error::MemoryControlNotAvailable, Lua};
-
-
-fn nothing(err: std::io::Error) -> Metadata{
-    println!("Error: {}", err);
-    let npath = Path::new("./mod.rs");
-    npath.metadata().unwrap()
-}
+use std::fs::*;
+use mlua::Lua;
 
 // TEST CODE
 pub fn execute_lua_file(lua: &mut Lua, path: &str){
     
-    let lua_path = Path::new(path);
-
-    println!("Path: {:?}", lua_path.as_os_str());
-    //lua.load(lua_path).exec().unwrap();
+    let lua_file_content = read(path).unwrap();
+    lua.load(lua_file_content).exec().unwrap();
 }
