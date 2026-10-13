@@ -1,4 +1,4 @@
-use ruggie_lib::prelude::*;
+use ruggie_lib::{input::buttons::Button, prelude::*};
 
 fn main() {
     let Ok(rl) = RuggieLib::new()
@@ -8,7 +8,7 @@ fn main() {
         return;
     };
 
-    rotating_cleon(rl);
+    input_test(rl);
 }
 
 fn render_cleon(mut rl: RuggieLib) {
@@ -72,7 +72,7 @@ fn render_shapes(mut rl: RuggieLib) {
     const BLACK: Color = Color::new(0, 0, 0, 255);
 
     const OUTLINE: u16 = 5;
-    const APPROX_SIDES: u32 = 20;
+    const APPROX_SIDES: u16 = 20;
 
     while rl.is_running() {
         rl.wait_for_vblank();
@@ -166,6 +166,49 @@ fn rotating_cleon(mut rl: RuggieLib) {
         );
 
         cleon_sprite.rotate_degrees(angle_diff);
+    }
+}
+
+fn input_test(mut rl: RuggieLib){
+    let Ok(mut rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else { return; }; // Enable console
+
+    while rl.is_running(){
+        rl.wait_for_vblank();
+        rl.clear_console();
+        rl.scan_input();
+
+        println!("CirclePad direction: {}, {}", rl.circlepad_direction().0, rl.circlepad_direction().1);
+
+        println!("A pressed: {}", rl.button_held(Button::A));
+        println!("B pressed: {}", rl.button_held(Button::B));
+        println!("Y pressed: {}", rl.button_held(Button::Y));
+        println!("X pressed: {}", rl.button_held(Button::X));
+
+        println!("Start pressed: {}", rl.button_held(Button::Start));
+        println!("Select pressed: {}", rl.button_held(Button::Select));
+
+        println!("Dpad right pressed: {}", rl.button_held(Button::DPadRight));
+        println!("Dpad up pressed: {}", rl.button_held(Button::DPadUp));
+        println!("Dpad left pressed: {}", rl.button_held(Button::DPadLeft));
+        println!("Dpad down pressed: {}", rl.button_held(Button::DPadDown));
+
+        println!("C-Stick direction: {}, {}", rl.c_stick_direction().0, rl.c_stick_direction().1);
+
+        println!("L pressed: {}", rl.button_held(Button::L));
+        println!("R pressed: {}", rl.button_held(Button::R));
+        println!("ZL pressed: {}", rl.button_held(Button::ZL));
+        println!("ZR pressed: {}", rl.button_held(Button::ZR));
+
+        let touchscreen_info = match rl.touch_pad_position(){
+            None => {
+                String::from("Touchpad pressed: False")
+            },
+            Some(value) =>{
+                format!("Touchpad pressed: True. Position: {}, {}", value.0, value.1)
+            }
+        };
+
+        println!("{touchscreen_info}");
     }
 }
 
