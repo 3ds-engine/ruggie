@@ -1,4 +1,8 @@
+pub mod lua;
+
 use ruggie_lib::{input::buttons::Button, prelude::*};
+use mlua::{Function, Lua};
+use lua::files::*;
 
 fn main() {
     let Ok(rl) = RuggieLib::new()
@@ -139,6 +143,9 @@ fn rotating_cleon(mut rl: RuggieLib) {
     let Some(mut cleon_sprite) = spritesheet.get_sprite(0) else {
         return;
     };
+
+    let mut lua = Lua::new();
+    execute_lua_file(&mut lua, "../test/lua/HelloRuggie.lua");
 
     cleon_sprite.set_pivot(0.5, 0.5); // Set position to center
 
