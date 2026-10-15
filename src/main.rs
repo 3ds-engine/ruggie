@@ -221,7 +221,12 @@ fn lua_test(mut rl: RuggieLib) {
 
     let mut lua = Lua::new();
 
-    execute_all_lua_files_in_directory(&mut lua, "romfs:/lua/");
+    //execute_lua_file(&mut lua, "romfs:/lua/HelloRuggie.lua");
+    execute_all_lua_files_in_directory(&mut lua, "romfs:/lua/test/");
+
+    while(rl.is_running()){
+
+    }
 }
 
 #[cfg(test)]

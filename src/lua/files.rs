@@ -12,8 +12,15 @@ pub fn execute_all_lua_files_in_directory(lua: &mut Lua, path: &str){
 
     let lua_directory = read_dir(path).unwrap();
 
-    //for file in lua_directory{
-        //println!("File type: {:?}", file.unwrap().file_type())
-    //}
+    for file in lua_directory {
+
+        let curr_file = file.unwrap();
+        let curr_file_path = curr_file.path();
+
+        if(curr_file.metadata().unwrap().is_file() && 
+            curr_file_path.extension().unwrap() == "lua"){
+            lua.load(curr_file_path).exec().unwrap();
+        }
+    }
 
 }
