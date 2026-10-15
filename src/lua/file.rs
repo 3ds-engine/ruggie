@@ -1,14 +1,13 @@
 use std::fs::*;
-use mlua::Lua;
+use mlua::{FromLuaMulti, Lua};
 
-// TEST CODE
-pub fn execute_lua_file(lua: &mut Lua, path: &str){
+pub fn execute_file(lua: &mut Lua, path: &str){
     
     let lua_file_content = read(path).unwrap();
     lua.load(lua_file_content).exec().unwrap();
 }
 
-pub fn execute_all_lua_files_in_directory(lua: &mut Lua, path: &str){
+pub fn execute_all_files_in_directory(lua: &mut Lua, path: &str){
 
     let lua_directory = read_dir(path).unwrap();
 
@@ -23,4 +22,12 @@ pub fn execute_all_lua_files_in_directory(lua: &mut Lua, path: &str){
         }
     }
 
+}
+
+pub fn get_value_from_file<T: FromLuaMulti>(lua: &mut Lua, path: &str) -> T {
+
+    let lua_file_content = read(path).unwrap();
+    let result: T = lua.load(lua_file_content).eval().unwrap();
+
+    return result;
 }

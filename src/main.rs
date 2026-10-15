@@ -2,7 +2,7 @@ pub mod lua;
 
 use ruggie_lib::{input::buttons::Button, prelude::*};
 use mlua::{Function, Lua};
-use lua::files::*;
+use lua::file::*;
 
 fn main() {
     let Ok(rl) = RuggieLib::new()
@@ -221,8 +221,11 @@ fn lua_test(mut rl: RuggieLib) {
 
     let mut lua = Lua::new();
 
-    //execute_lua_file(&mut lua, "romfs:/lua/HelloRuggie.lua");
-    execute_all_lua_files_in_directory(&mut lua, "romfs:/lua/test/");
+    //execute_file(&mut lua, "romfs:/lua/HelloRuggie.lua");
+    //execute_all_files_in_directory(&mut lua, "romfs:/lua/test/");
+    let four: f64 = get_value_from_file(&mut lua, "romfs:/lua/SumTwoPlusTwo.lua");
+
+    println!("four is: {}", four);
 
     while(rl.is_running()){
 
