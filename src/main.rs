@@ -12,7 +12,7 @@ fn main() {
         return;
     };
 
-    input_test(rl);
+    lua_test(rl);
 }
 
 fn render_cleon(mut rl: RuggieLib) {
@@ -214,6 +214,14 @@ fn input_test(mut rl: RuggieLib){
 
         println!("{touchscreen_info}");
     }
+}
+
+fn lua_test(mut rl: RuggieLib) {
+    let Ok(mut rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else { return; }; // Enable console
+
+    let mut lua = Lua::new();
+
+    execute_all_lua_files_in_directory(&mut lua, "romfs:/lua/");
 }
 
 #[cfg(test)]
