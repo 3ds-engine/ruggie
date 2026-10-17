@@ -10,7 +10,7 @@ fn main() {
     };
 
     // Example here
-    lua_example(rl);
+    entry_point_example(rl);
 }
 
 #[cfg(test)]

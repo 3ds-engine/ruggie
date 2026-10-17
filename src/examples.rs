@@ -1,7 +1,8 @@
-use ruggie_lib::prelude::*;
-use ruggie_lib::input::buttons::Button;
+use crate::core::Core;
 use crate::lua::file::*;
 use mlua::Lua;
+use ruggie_lib::input::buttons::Button;
+use ruggie_lib::prelude::*;
 
 pub fn render_cleon(mut rl: RuggieLib) {
     const CLEON_FRONT_DEPTH: f32 = 5.0;
@@ -121,8 +122,10 @@ pub fn render_shapes(mut rl: RuggieLib) {
     }
 }
 
-pub fn rotating_cleon(mut rl: RuggieLib) {
-    let Ok(mut rl) = rl.with([Feature::Console(BOTTOM_SCREEN_INDEX)]) else { return; }; // Enable console
+pub fn rotating_cleon(rl: RuggieLib) {
+    let Ok(mut rl) = rl.with([Feature::Console(BOTTOM_SCREEN_INDEX)]) else {
+        return;
+    }; // Enable console
 
     let Some(spritesheet) = SpriteSheet::new("romfs:/gfx/sprite.t3x") else {
         return;
@@ -161,15 +164,21 @@ pub fn rotating_cleon(mut rl: RuggieLib) {
     }
 }
 
-pub fn input_example(mut rl: RuggieLib){
-    let Ok(mut rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else { return; }; // Enable console
+pub fn input_example(rl: RuggieLib) {
+    let Ok(mut rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else {
+        return;
+    }; // Enable console
 
-    while rl.is_running(){
+    while rl.is_running() {
         rl.wait_for_vblank();
         rl.clear_console();
         rl.scan_input();
 
-        println!("CirclePad direction: {}, {}", rl.circlepad_direction().0, rl.circlepad_direction().1);
+        println!(
+            "CirclePad direction: {}, {}",
+            rl.circlepad_direction().0,
+            rl.circlepad_direction().1
+        );
 
         println!("A pressed: {}", rl.button_held(Button::A));
         println!("B pressed: {}", rl.button_held(Button::B));
@@ -184,18 +193,20 @@ pub fn input_example(mut rl: RuggieLib){
         println!("Dpad left pressed: {}", rl.button_held(Button::DPadLeft));
         println!("Dpad down pressed: {}", rl.button_held(Button::DPadDown));
 
-        println!("C-Stick direction: {}, {}", rl.c_stick_direction().0, rl.c_stick_direction().1);
+        println!(
+            "C-Stick direction: {}, {}",
+            rl.c_stick_direction().0,
+            rl.c_stick_direction().1
+        );
 
         println!("L pressed: {}", rl.button_held(Button::L));
         println!("R pressed: {}", rl.button_held(Button::R));
         println!("ZL pressed: {}", rl.button_held(Button::ZL));
         println!("ZR pressed: {}", rl.button_held(Button::ZR));
 
-        let touchscreen_info = match rl.touch_pad_position(){
-            None => {
-                String::from("Touchpad pressed: False")
-            },
-            Some(value) =>{
+        let touchscreen_info = match rl.touch_pad_position() {
+            None => String::from("Touchpad pressed: False"),
+            Some(value) => {
                 format!("Touchpad pressed: True. Position: {}, {}", value.0, value.1)
             }
         };
@@ -204,8 +215,11 @@ pub fn input_example(mut rl: RuggieLib){
     }
 }
 
-pub fn lua_example(mut rl: RuggieLib) {
-    let Ok(mut rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else { return; }; // Enable console
+pub fn lua_example(rl: RuggieLib) {
+    // Enable console
+    let Ok(rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else {
+        return;
+    };
 
     let mut lua = Lua::new();
 
@@ -215,7 +229,17 @@ pub fn lua_example(mut rl: RuggieLib) {
 
     println!("four is: {}", four);
 
-    while(rl.is_running()){
+    while (rl.is_running()) {}
+}
 
-    }
+pub fn entry_point_example(rl: RuggieLib) {
+    // Enable console on top screen
+    let Ok(rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else {
+        return;
+    };
+
+    let mut core = Core::new();
+    core.load_entry_point();
+
+    while (rl.is_running()) {}
 }
