@@ -229,7 +229,7 @@ pub fn lua_example(rl: RuggieLib) {
 
     println!("four is: {}", four);
 
-    while (rl.is_running()) {}
+    while rl.is_running() {}
 }
 
 pub fn entry_point_example(rl: RuggieLib) {
@@ -241,5 +241,5 @@ pub fn entry_point_example(rl: RuggieLib) {
     let mut core = Core::new();
     core.load_entry_point();
 
-    while (rl.is_running()) {}
+    while rl.is_running() {}
 }
