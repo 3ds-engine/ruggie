@@ -10,7 +10,7 @@ fn main() {
     };
 
     // Example here
-    entry_point_example(rl);
+    audio_example(rl);
 }
 
 #[cfg(test)]

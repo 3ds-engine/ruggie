@@ -147,9 +147,14 @@ pub fn rotating_cleon(rl: RuggieLib) {
     println!("After:");
     println!("Width: {w}, height: {h}");
 
+    
     let angle_diff = 1.0; // Degrees
+
+    rl.play_streamed_sound("romfs:/audio/test.mp3");
+    
     while rl.is_running() {
         rl.wait_for_vblank();
+        rl.audio_update();
 
         let mut render = rl.start_drawing();
         render.clear_screen(Color::new(255, 255, 255, 255));
@@ -212,6 +217,13 @@ pub fn input_example(rl: RuggieLib) {
         };
 
         println!("{touchscreen_info}");
+    }
+}
+
+pub fn audio_example(mut rl: RuggieLib){
+    rl.play_streamed_sound("romfs:/audio/test.mp3");
+    while rl.is_running() {
+        rl.audio_update();
     }
 }
 
