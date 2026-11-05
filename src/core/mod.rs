@@ -1,9 +1,9 @@
-use crate::{core::world::World, lua::file::get_value_from_file};
-use mlua::{Lua, Table};
+use crate::{core::{renderer2d::RendererApi, world::World}, lua::file::get_value_from_file};
+use mlua::{Function, Lua, Table};
 
 pub mod world;
+pub mod renderer2d;
 
-#[derive(Default)]
 pub struct Core {
     lua: Lua,
     world: Option<World>,
@@ -11,11 +11,12 @@ pub struct Core {
 
 impl Core {
     pub fn new() -> Self {
-        Self { lua: Lua::new(), world: None }
+        Self { lua: Lua::new(), world: None}
     }
 
     pub fn load_entry_point(&mut self) {
         let scene: Table = get_value_from_file(&mut self.lua, "romfs:/game/main.lua");
-        println!("{:?}", scene);
+        let init : Function = scene.get("init").unwrap();
+        init.call::<()>(self.lua.create_table().unwrap());
     }
 }
