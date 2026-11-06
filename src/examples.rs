@@ -244,14 +244,14 @@ pub fn lua_example(rl: RuggieLib) {
     while rl.is_running() {}
 }
 
-pub fn entry_point_example(rl: RuggieLib) {
-    // Enable console on top screen
-    let Ok(rl) = rl.with([Feature::Console(TOP_SCREEN_INDEX)]) else {
-        return;
-    };
-
+pub fn entry_point_example(mut rl: RuggieLib) {
     let mut core = Core::new();
     core.load_entry_point();
 
-    while rl.is_running() {}
+    while rl.is_running() {
+        rl.wait_for_vblank();
+
+        let mut draw = rl.start_drawing();
+        core.render(&mut draw);
+    }
 }
