@@ -1,10 +1,14 @@
 use mlua::{Lua, UserData};
 use ruggie_lib::draw::color::Color;
 
+pub trait LuaCustomType {
+    fn lua_register(lua: &Lua) -> mlua::Result<()>;
+}
+
 pub struct LuaColor(pub Color);
 
-impl LuaColor {
-    pub fn register(lua: &Lua) -> mlua::Result<()> {
+impl LuaCustomType for LuaColor {
+    fn lua_register(lua: &Lua) -> mlua::Result<()> {
         let t = lua.create_table()?;
         t.set(
             "new",
@@ -19,6 +23,7 @@ impl LuaColor {
                 Ok(LuaColor(Color::new(r, g, b, a)))
             })?,
         )?;
+
         lua.globals().set("Color", t)
     }
 }

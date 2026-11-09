@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use crate::core::Core;
 use crate::lua::file::*;
 use mlua::Lua;
@@ -244,9 +246,13 @@ pub fn lua_example(rl: RuggieLib) {
     while rl.is_running() {}
 }
 
-pub fn entry_point_example(mut rl: RuggieLib) {
-    let mut core = Core::new();
-    core.load_entry_point();
+pub fn entry_point_example(rl: RuggieLib) -> Result<(), Box<dyn Error>> {
+    let Ok(mut rl) = rl.with([Feature::Console(BOTTOM_SCREEN_INDEX)]) else {
+        return Ok(());
+    };
+
+    let mut core = Core::new()?;
+    core.load_entry_point()?;
 
     while rl.is_running() {
         rl.wait_for_vblank();
@@ -254,4 +260,6 @@ pub fn entry_point_example(mut rl: RuggieLib) {
         let mut draw = rl.start_drawing();
         core.render(&mut draw);
     }
+
+    Ok(())
 }

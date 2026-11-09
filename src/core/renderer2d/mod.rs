@@ -8,8 +8,10 @@ use std::{cell::Cell, ptr::NonNull, rc::Rc};
 pub mod lua_types;
 use lua_types::LuaColor;
 
-/// The draw handle with its lifetime erased. It is only ever dereferenced while a
-/// `FrameGuard` is alive, i.e. while the real handle is exclusively borrowed.
+use crate::core::renderer2d::lua_types::LuaCustomType;
+
+/// The draw handle with its lifetime erased. It is only ever dereferenced outside of the method
+/// itself, Core should only call the render functionality with a valid DrawHandle
 type ErasedHandle = RuggieDrawHandle<'static>;
 
 #[derive(Clone, Default)]
@@ -30,21 +32,12 @@ impl HandleSlot {
     }
 }
 
-/// Clears the slot when the frame ends, on `Ok`, on `Err` and on panic.
-struct FrameGuard<'a>(&'a HandleSlot);
-
-impl Drop for FrameGuard<'_> {
-    fn drop(&mut self) {
-        self.0.0.set(None);
-    }
-}
-
 /// The object Lua sees. Created once, lives for the whole program.
-struct Renderer2D {
+struct Lua2DRenderer {
     slot: HandleSlot,
 }
 
-impl UserData for Renderer2D {
+impl UserData for Lua2DRenderer {
     fn add_methods<M: UserDataMethods<Self>>(m: &mut M) {
         // Screen switching
         m.add_method("draw_top", |_, this, ()| {
@@ -136,10 +129,10 @@ pub struct RendererApi {
 impl RendererApi {
     /// # Errors
     /// Fails if Lua cannot allocate the userdata.
-    pub fn new(lua: &Lua) -> Result<Self> {
-        LuaColor::register(lua)?;
+    pub fn new(lua: &Lua) -> mlua::Result<Self> {
+        LuaColor::lua_register(lua);
         let slot = HandleSlot::default();
-        let renderer = lua.create_userdata(Renderer2D { slot: slot.clone() })?;
+        let renderer = lua.create_userdata(Lua2DRenderer { slot: slot.clone() })?;
         Ok(Self { slot, renderer })
     }
 
@@ -155,7 +148,6 @@ impl RendererApi {
         self.slot
             .0
             .set(Some(NonNull::from(handle).cast::<ErasedHandle>()));
-        let _guard = FrameGuard(&self.slot);
         f(&self.renderer)
     }
 }

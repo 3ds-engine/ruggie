@@ -9,7 +9,6 @@ impl World {
         Self { current_scene: scene }
     }
  
-    /// Looked up on every call, so scripts may reassign `scene.render` at runtime.
     pub fn render(&self, renderer: &AnyUserData) -> mlua::Result<()> {
         let render: Function = self.current_scene.get("render")?;
         render.call(renderer)
