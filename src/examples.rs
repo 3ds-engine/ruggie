@@ -152,13 +152,14 @@ pub fn rotating_cleon(rl: RuggieLib) {
     
     let angle_diff = 1.0; // Degrees
 
-    rl.play_streamed_sound("romfs:/audio/test.mp3");
+    //rl.play_streamed_sound("romfs:/audio/test.mp3");
     
     while rl.is_running() {
         let dt = rl.time.get_seconds_since_last_check();
+        let tm = rl.time.get_seconds_since_initialization();
         println!("DeltaTime: {dt}");
         rl.wait_for_vblank();
-        rl.audio_update();
+        //rl.audio_update();
 
         let mut render = rl.start_drawing();
         render.clear_screen(Color::new(255, 255, 255, 255));
