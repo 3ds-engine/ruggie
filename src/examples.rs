@@ -155,6 +155,8 @@ pub fn rotating_cleon(rl: RuggieLib) {
     rl.play_streamed_sound("romfs:/audio/test.mp3");
     
     while rl.is_running() {
+        let dt = rl.time.get_seconds_since_last_check();
+        println!("DeltaTime: {dt}");
         rl.wait_for_vblank();
         rl.audio_update();
 
