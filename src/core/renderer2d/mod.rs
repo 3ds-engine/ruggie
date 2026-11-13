@@ -14,10 +14,15 @@ use crate::core::renderer2d::lua_types::LuaCustomType;
 /// itself, Core should only call the render functionality with a valid DrawHandle
 type ErasedHandle = RuggieDrawHandle<'static>;
 
+/// The place where the erased draw handle is stored. It is a NonNull pointer so that it does not
+/// have a lifetime, an Option so that it can be treated as null when no renderer is alive (between
+/// frames), a cell so that it is mutable in methods with &self status for mlua's add_method and,
+/// finally, Rc so that it stays alive while lua is rendering, since nothing in rust's code is
+/// currently waiting for lua to finnish rendering before running the next instruction.
 #[derive(Clone, Default)]
-struct HandleSlot(Rc<Cell<Option<NonNull<ErasedHandle>>>>);
+struct HandleStorage(Rc<Cell<Option<NonNull<ErasedHandle>>>>);
 
-impl HandleSlot {
+impl HandleStorage {
     fn with<R>(&self, f: impl FnOnce(&mut ErasedHandle) -> R) -> Result<R> {
         let mut ptr = self
             .0
@@ -25,16 +30,27 @@ impl HandleSlot {
             .ok_or_else(|| Error::runtime("renderer can only be used inside world.render"))?;
 
         // SAFETY: the slot is only `Some` while `RendererApi::frame` holds an exclusive
-        // borrow of the real handle, and nothing else touches that handle until the guard
+        // borrow of the real handle, and nothing else touches that handle until the FrameGuard
         // clears the slot. Lua is single-threaded and draw calls never re-enter Lua, so
         // this `&mut` is unique for the duration of `f`.
         Ok(f(unsafe { ptr.as_mut() }))
     }
 }
 
+/// Clears the slot when the frame ends. Also ensures that the reference in the HandleStorage's Rc
+/// is erased when panic is called, to ensure no memory is leaked due to unreachable cyclic
+/// references
+struct FrameGuard<'a>(&'a HandleStorage);
+ 
+impl Drop for FrameGuard<'_> {
+    fn drop(&mut self) {
+        self.0.0.set(None);
+    }
+}
+
 /// The object Lua sees. Created once, lives for the whole program.
 struct Lua2DRenderer {
-    slot: HandleSlot,
+    slot: HandleStorage,
 }
 
 impl UserData for Lua2DRenderer {
@@ -122,7 +138,7 @@ impl UserData for Lua2DRenderer {
 
 /// Store this in `Core`. Owns the once-created renderer object.
 pub struct RendererApi {
-    slot: HandleSlot,
+    slot: HandleStorage,
     renderer: AnyUserData,
 }
 
@@ -131,7 +147,7 @@ impl RendererApi {
     /// Fails if Lua cannot allocate the userdata.
     pub fn new(lua: &Lua) -> mlua::Result<Self> {
         LuaColor::lua_register(lua);
-        let slot = HandleSlot::default();
+        let slot = HandleStorage::default();
         let renderer = lua.create_userdata(Lua2DRenderer { slot: slot.clone() })?;
         Ok(Self { slot, renderer })
     }
@@ -140,7 +156,7 @@ impl RendererApi {
     ///
     /// # Errors
     /// Returns whatever `f` returns.
-    pub fn frame<R>(
+    pub fn render_frame<R>(
         &self,
         handle: &mut RuggieDrawHandle<'_>,
         f: impl FnOnce(&AnyUserData) -> Result<R>,
@@ -148,6 +164,8 @@ impl RendererApi {
         self.slot
             .0
             .set(Some(NonNull::from(handle).cast::<ErasedHandle>()));
+
+        let _sagety_guard = FrameGuard(&self.slot);
         f(&self.renderer)
     }
 }

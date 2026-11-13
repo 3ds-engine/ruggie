@@ -32,7 +32,7 @@ impl Core {
 
     pub fn render(&self, draw: &mut RuggieDrawHandle<'_>) {
         if let Some(world) = &self.world {
-            self.renderer.frame(draw, |renderer| world.render(renderer)).unwrap();
+            self.renderer.render_frame(draw, |renderer| world.render(renderer)).unwrap();
         } else {
             println!("Can't render, sorry!")
         }
