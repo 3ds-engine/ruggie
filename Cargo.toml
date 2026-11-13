@@ -3,6 +3,9 @@ name = "ruggie"
 version = "0.1.0"
 edition = "2024"
 
+[toolchain]
+channel = "nightly-2026-03-30"
+
 [dependencies]
 # ctru-rs = { git = "https://github.com/rust3ds/ctru-rs", features = ["romfs"] }
 mlua = {version = "0.12.2", features = ["lua54"]}
