@@ -11,7 +11,7 @@ fn main() {
     };
 
     // Example here
-    rotating_cleon(rl);
+    entry_point_example(rl);
 }
 
 #[cfg(test)]
