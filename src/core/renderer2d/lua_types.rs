@@ -41,15 +41,15 @@ impl UserData for LuaColor {
             this.0.r = value;
             Ok(())
         });
-        fields.add_field_method_set("r", |_, this, value: u8| {
-            this.0.a = value;
+        fields.add_field_method_set("g", |_, this, value: u8| {
+            this.0.g = value;
             Ok(())
         });
-        fields.add_field_method_set("r", |_, this, value: u8| {
+        fields.add_field_method_set("b", |_, this, value: u8| {
             this.0.b = value;
             Ok(())
         });
-        fields.add_field_method_set("r", |_, this, value: u8| {
+        fields.add_field_method_set("a", |_, this, value: u8| {
             this.0.a = value;
             Ok(())
         });
