@@ -1,8 +1,9 @@
+local FG_COLOR = Color.hex(0xFFABABFF)
+local BG_COLOR = Color.hex(0x303030FF)
+local OUTLINE_COLOR = Color.hex(0x000000FF)
+
 local SCENE = {
 	render = function(render)
-		local FG_COLOR = Color.hex(0xFFABABFF)
-		local BG_COLOR = Color.hex(0x303030FF)
-		local OUTLINE_COLOR = Color.hex(0x000000FF)
 
 		render:draw_top()
 

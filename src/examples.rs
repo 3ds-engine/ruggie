@@ -257,15 +257,11 @@ pub fn entry_point_example(rl: RuggieLib) -> Result<(), Box<dyn Error>> {
         return Ok(());
     };
 
-    let mut core = Core::new()?;
+    let mut core = Core::new(rl)?;
     core.load_entry_point()?;
 
-    while rl.is_running() {
-        rl.wait_for_vblank();
-
-        rl.begin_drawing();
-        // Render
-        rl.end_drawing();
+    while core.is_running() {
+        core.render();
     }
 
     Ok(())
