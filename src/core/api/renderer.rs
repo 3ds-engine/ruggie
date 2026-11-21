@@ -6,6 +6,7 @@ use ruggie_lib::prelude::RuggieLib;
 use crate::core::{SharedRuggieLib, api::color::LuaColor};
 
 /// Lua-api wrapper around the 2D rendering functionality of `RuggieLib`.
+#[derive(Clone)]
 pub struct Renderer2DApi {
     rl: SharedRuggieLib,
 }

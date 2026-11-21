@@ -50,13 +50,14 @@ impl Core {
     }
 
     pub fn render(&mut self) {
-        let rl = self.rl.borrow();
-        rl.wait_for_vblank();
-        rl.begin_drawing();
-        if let Some(world) = self.world {
-            world.render(self.api.renderer());
+        self.rl.borrow().wait_for_vblank();
+        self.rl.borrow().begin_drawing();
+
+        if let Some(world) = &self.world {
+            world.render(self.api.renderer_userdata());
         }
-        rl.end_drawing();
+
+        self.rl.borrow().end_drawing();
     }
 
     pub fn is_running(&self) -> bool {

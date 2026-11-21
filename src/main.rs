@@ -11,7 +11,7 @@ fn main() {
     };
 
     // Example here
-    audio_example(rl);
+    entry_point_example(rl);
 }
 
 #[cfg(test)]
