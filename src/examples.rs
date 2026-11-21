@@ -226,9 +226,9 @@ pub fn input_example(rl: RuggieLib) {
 }
 
 pub fn audio_example(mut rl: RuggieLib){
-    rl.play_streamed_sound("romfs:/audio/test.mp3");
+    let streamed_sound = rl.load_streamed_sound("romfs:/audio/test.mp3").unwrap();
+    rl.play_streamed_sound(&streamed_sound);
     while rl.is_running() {
-        rl.audio_update();
     }
 }
 
