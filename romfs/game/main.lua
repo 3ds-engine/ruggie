@@ -1,6 +1,6 @@
-local FG_COLOR = Color.hex(0xFFABABFF)
-local BG_COLOR = Color.hex(0x303030FF)
-local OUTLINE_COLOR = Color.hex(0x000000FF)
+local FG_COLOR = Color.PINK
+local BG_COLOR = Color.GRAY
+local OUTLINE_COLOR = Color.BLACK
 
 local SCENE = {
 	render = function(render)

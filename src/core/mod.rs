@@ -1,3 +1,5 @@
+use std::{cell::RefCell, rc::Rc};
+
 use crate::{
     core::{api::Api, world::World},
     lua::file::get_value_from_file,
@@ -9,10 +11,14 @@ use ruggie_lib::prelude::RuggieLib;
 pub mod api;
 pub mod world;
 
+/// Shared handle to the engine instance. API modules can hold a clone of this to expose their
+/// functionality without owning the `RuggieLib` instance that core may still use
+pub type SharedRuggieLib = Rc<RefCell<RuggieLib>>;
+
 pub struct Core {
     lua: Lua,
     api: Api,
-    rl: RuggieLib,
+    rl: SharedRuggieLib,
     world: Option<World>,
 }
 
@@ -21,12 +27,13 @@ impl Core {
     /// Fails if any Lua API can't be registered.
     pub fn new(rl: RuggieLib) -> mlua::Result<Self> {
         let lua = Lua::new();
-        let api = Api::new(&lua)?;
+        let shared_rl = Rc::new(RefCell::new(rl));
+        let api = Api::new(shared_rl.clone(), &lua)?;
 
         Ok(Self {
             lua,
             api,
-            rl,
+            rl: shared_rl,
             world: None,
         })
     }
@@ -43,13 +50,16 @@ impl Core {
     }
 
     pub fn render(&mut self) {
-        self.rl.wait_for_vblank();
-        self.rl.begin_drawing();
-        todo!("Render the current scene");
-        self.rl.end_drawing();
+        let rl = self.rl.borrow();
+        rl.wait_for_vblank();
+        rl.begin_drawing();
+        if let Some(world) = self.world {
+            world.render(self.api.renderer());
+        }
+        rl.end_drawing();
     }
 
     pub fn is_running(&self) -> bool {
-        self.rl.is_running()
+        self.rl.borrow().is_running()
     }
 }
