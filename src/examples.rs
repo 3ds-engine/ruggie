@@ -18,33 +18,35 @@ pub fn render_cleon(mut rl: RuggieLib) {
         return;
     };
 
-    let x_pos = (rl.top_left_screen.width() / 2) as f32;
-    let y_pos = (rl.top_left_screen.height() / 2) as f32;
+    let x_pos = (rl.screen_witdh() / 2) as f32;
+    let y_pos = (rl.screen_height() / 2) as f32;
 
     while rl.is_running() {
         rl.wait_for_vblank();
         let front_cleon_depth = CLEON_FRONT_DEPTH * rl.get_3d_slider_state();
         let back_cleon_depth = CLEON_BACK_DEPTH * rl.get_3d_slider_state();
-        let mut draw = rl.start_drawing();
+        rl.begin_drawing();
 
-        draw.clear_screen(Color::new(0, 255, 255, 255));
+        rl.clear_screen(Color::new(0, 255, 255, 255));
         //back_cleon
-        draw.draw_sprite(&mut cleon_sprite, -back_cleon_depth + 10.0, 10.0);
+        rl.draw_sprite(&mut cleon_sprite, -back_cleon_depth + 10.0, 10.0);
 
         //front_cleon
-        draw.draw_sprite(&mut cleon_sprite, -front_cleon_depth + x_pos, y_pos);
+        rl.draw_sprite(&mut cleon_sprite, -front_cleon_depth + x_pos, y_pos);
 
-        draw.draw_top_right();
-        draw.clear_screen(Color::new(0, 255, 255, 255));
+        rl.draw_top_right();
+        rl.clear_screen(Color::new(0, 255, 255, 255));
         //back cleon
-        draw.draw_sprite(&mut cleon_sprite, back_cleon_depth + 10.0, 10.0);
+        rl.draw_sprite(&mut cleon_sprite, back_cleon_depth + 10.0, 10.0);
 
         //front cleon
-        draw.draw_sprite(&mut cleon_sprite, front_cleon_depth + x_pos, y_pos);
+        rl.draw_sprite(&mut cleon_sprite, front_cleon_depth + x_pos, y_pos);
 
-        draw.draw_bottom();
-        draw.clear_screen(Color::new(0, 255, 255, 255));
-        draw.draw_sprite(&mut cleon_sprite, 1.0, 0.0);
+        rl.draw_bottom();
+        rl.clear_screen(Color::new(0, 255, 255, 255));
+        rl.draw_sprite(&mut cleon_sprite, 1.0, 0.0);
+
+        rl.end_drawing();
     }
 }
 
@@ -52,9 +54,10 @@ pub fn render_rectangle(mut rl: RuggieLib) {
     while rl.is_running() {
         rl.wait_for_vblank();
 
-        let mut draw = rl.start_drawing();
-        draw.clear_screen(Color::new(0, 255, 255, 255));
-        draw.draw_rectangle(0.0, 0.0, 100.0, 100.0, Color::new(255, 0, 0, 255));
+        rl.begin_drawing();
+        rl.clear_screen(Color::new(0, 255, 255, 255));
+        rl.draw_rectangle(0.0, 0.0, 100.0, 100.0, Color::new(255, 0, 0, 255));
+        rl.end_drawing();
     }
 }
 
@@ -72,22 +75,22 @@ pub fn render_shapes(mut rl: RuggieLib) {
     while rl.is_running() {
         rl.wait_for_vblank();
 
-        let mut draw = rl.start_drawing();
-        draw.clear_screen(WHITE);
+        rl.begin_drawing();
+        rl.clear_screen(WHITE);
 
         let square_side = 100.0;
-        draw.draw_rectangle(0.0, 0.0, square_side, square_side, RED);
-        draw.draw_rectangle_outline(0.0, 0.0, square_side, square_side, OUTLINE, BLACK);
+        rl.draw_rectangle(0.0, 0.0, square_side, square_side, RED);
+        rl.draw_rectangle_outline(0.0, 0.0, square_side, square_side, OUTLINE, BLACK);
 
         let circle_radius = 50.0;
-        draw.draw_circle(
-            draw.screen_witdh() as f32 - circle_radius,
+        rl.draw_circle(
+            rl.screen_witdh() as f32 - circle_radius,
             circle_radius,
             circle_radius,
             BLUE,
         );
-        draw.draw_circle_outline(
-            draw.screen_witdh() as f32 - circle_radius,
+        rl.draw_circle_outline(
+            rl.screen_witdh() as f32 - circle_radius,
             circle_radius,
             circle_radius,
             APPROX_SIDES,
@@ -95,13 +98,13 @@ pub fn render_shapes(mut rl: RuggieLib) {
             BLACK,
         );
 
-        draw.draw_bottom();
-        draw.clear_screen(WHITE);
+        rl.draw_bottom();
+        rl.clear_screen(WHITE);
 
         let ellipse_rx = 50.0;
         let ellipse_ry = 25.0;
-        draw.draw_ellipse(ellipse_rx, ellipse_ry, ellipse_rx, ellipse_ry, GREEN);
-        draw.draw_ellipse_outline(
+        rl.draw_ellipse(ellipse_rx, ellipse_ry, ellipse_rx, ellipse_ry, GREEN);
+        rl.draw_ellipse_outline(
             ellipse_rx,
             ellipse_ry,
             ellipse_rx,
@@ -113,14 +116,13 @@ pub fn render_shapes(mut rl: RuggieLib) {
 
         let triangle_witdth = 100.0;
         let triangle_height = 75.0;
-        let (x0, y0) = (
-            draw.screen_witdh() as f32 - triangle_witdth,
-            triangle_height,
-        );
-        let (x1, y1) = (draw.screen_witdh() as f32 - triangle_witdth / 2.0, 0.0);
-        let (x2, y2) = (draw.screen_witdh() as f32, triangle_height);
-        draw.draw_triangle(x0, y0, x1, y1, x2, y2, YELLOW);
-        draw.draw_triangle_outline(x0, y0, x1, y1, x2, y2, OUTLINE, BLACK);
+        let (x0, y0) = (rl.screen_witdh() as f32 - triangle_witdth, triangle_height);
+        let (x1, y1) = (rl.screen_witdh() as f32 - triangle_witdth / 2.0, 0.0);
+        let (x2, y2) = (rl.screen_witdh() as f32, triangle_height);
+        rl.draw_triangle(x0, y0, x1, y1, x2, y2, YELLOW);
+        rl.draw_triangle_outline(x0, y0, x1, y1, x2, y2, OUTLINE, BLACK);
+
+        rl.end_drawing();
     }
 }
 
@@ -149,26 +151,28 @@ pub fn rotating_cleon(rl: RuggieLib) {
     println!("After:");
     println!("Width: {w}, height: {h}");
 
-    
     let angle_diff = 1.0; // Degrees
 
     //rl.play_streamed_sound("romfs:/audio/test.mp3");
-    
+
     while rl.is_running() {
-        let dt = rl.time.get_seconds_since_last_check();
-        let tm = rl.time.get_seconds_since_initialization();
+        let dt = rl.time.since_last_check().as_secs_f32();
+
         println!("DeltaTime: {dt}");
         rl.wait_for_vblank();
-        //rl.audio_update();
 
-        let mut render = rl.start_drawing();
-        render.clear_screen(Color::new(255, 255, 255, 255));
+        {
+            rl.begin_drawing();
+            rl.clear_screen(Color::new(255, 255, 255, 255));
 
-        render.draw_sprite(
-            &mut cleon_sprite,
-            render.screen_witdh() as f32 / 2.0,
-            render.screen_height() as f32 / 2.0,
-        );
+            rl.draw_sprite(
+                &mut cleon_sprite,
+                rl.screen_witdh() as f32 / 2.0,
+                rl.screen_height() as f32 / 2.0,
+            );
+
+            rl.end_drawing();
+        }
 
         cleon_sprite.rotate_degrees(angle_diff);
     }
@@ -225,11 +229,10 @@ pub fn input_example(rl: RuggieLib) {
     }
 }
 
-pub fn audio_example(mut rl: RuggieLib){
+pub fn audio_example(mut rl: RuggieLib) {
     let streamed_sound = rl.load_streamed_sound("romfs:/audio/test.mp3").unwrap();
-    rl.play_streamed_sound(&streamed_sound);
-    while rl.is_running() {
-    }
+    rl.play_streamed_sound(&streamed_sound).unwrap();
+    while rl.is_running() {}
 }
 
 pub fn lua_example(rl: RuggieLib) {
@@ -250,7 +253,7 @@ pub fn lua_example(rl: RuggieLib) {
 }
 
 pub fn entry_point_example(rl: RuggieLib) -> Result<(), Box<dyn Error>> {
-    let Ok(mut rl) = rl.with([Feature::Console(BOTTOM_SCREEN_INDEX)]) else {
+    let Ok(rl) = rl.with([Feature::Console(BOTTOM_SCREEN_INDEX)]) else {
         return Ok(());
     };
 
@@ -260,8 +263,9 @@ pub fn entry_point_example(rl: RuggieLib) -> Result<(), Box<dyn Error>> {
     while rl.is_running() {
         rl.wait_for_vblank();
 
-        let mut draw = rl.start_drawing();
-        core.render(&mut draw);
+        rl.begin_drawing();
+        // Render
+        rl.end_drawing();
     }
 
     Ok(())

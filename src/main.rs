@@ -2,21 +2,17 @@ use ruggie::examples::*;
 use ruggie_lib::prelude::*;
 
 fn main() {
-    let Ok(rl) = RuggieLib::new() else {
-        return;
-    };
-
-    let Ok(rl) = rl.with([Feature::RomFS, Feature::Stereoscopic3D]) else {
-        return;
-    };
+    let rl = RuggieLib::new()
+        .unwrap()
+        .with([Feature::RomFS, Feature::Stereoscopic3D])
+        .unwrap();
 
     // Example here
-    audio_example(rl);
+    entry_point_example(rl);
 }
 
 #[cfg(test)]
 mod tests {
-
     use super::*;
 
     #[test]
